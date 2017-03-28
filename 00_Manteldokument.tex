@@ -1,0 +1,235 @@
+%\documentclass[german,11pt,paper=a4,DIV=calc,oneside]{scrbook}
+\documentclass[german,11pt,paper=a4,DIV=calc,oneside]{scrreprt}
+
+% fix for recently "old" latex template (\tightlist in use) in pandoc
+\def\tightlist{}
+
+\usepackage[utf8]{inputenc}
+\DeclareUnicodeCharacter{00A0}{~}
+\usepackage[T1]{fontenc}
+
+% install `cm-super` (recommended) or activate lmodern in here
+%\usepackage{lmodern}
+
+\usepackage[protrusion=true,expansion=true]{microtype} % Better typography
+\usepackage[ngerman]{babel}
+\usepackage[autostyle=true,german=quotes]{csquotes}
+\usepackage[top=3cm,bottom=3cm]{geometry}
+\usepackage{ifxetex}
+\usepackage{ifluatex}
+
+% Markdown Source Blocks are translated to Shaded boxes with Highlighting
+% we better ommit this here with simple listings
+%~ \usepackage{xcolor}
+%~ \usepackage{framed}
+%~ \definecolor{shadecolor}{cmyk}{0,0,0,10}
+
+\newcommand{\projektname}{SemAhto}
+
+% enable environment variables to be used
+\usepackage{ifxetex,ifluatex}
+\ifxetex
+  \usepackage{catchfile}
+  \newcommand\getenv[2][]{%
+    \immediate\write18{kpsewhich --var-value #2 > \jobname.tmp}%
+    \CatchFileDef{\temp}{\jobname.tmp}{\endlinechar=-1}%
+    \if\relax\detokenize{#1}\relax\temp\else\let#1\temp\fi}
+\else
+  \ifluatex
+    \newcommand\getenv[2][]{%
+      \edef\temp{\directlua{tex.sprint(
+        kpse.var_value("\luatexluaescapestring{#2}") or "" ) }}%
+      \if\relax\detokenize{#1}\relax\temp\else\let#1\temp\fi}
+  \else
+    \usepackage{catchfile}
+    \newcommand{\getenv}[2][]{%
+      \CatchFileEdef{\temp}{"|kpsewhich --var-value #2"}{\endlinechar=-1}%
+      \if\relax\detokenize{#1}\relax\temp\else\let#1\temp\fi}
+  \fi
+\fi
+
+% import env variable `docname`
+\getenv[\DOCNAME]{DOCNAME}
+\getenv[\ProjTitle]{ProjTitle}
+
+% include complete pdf as a page
+\usepackage{pdfpages}
+
+
+\usepackage[hang, flushmargin]{footmisc}
+\usepackage[
+	colorlinks=true,
+	hyperfootnotes=false
+]{hyperref}
+\usepackage{footnotebackref}
+%~ \usepackage[pdftex, unicode,
+			%~ driverfallback=hypertex,%hpdftex,	%
+			%~ colorlinks=true,
+			%~ pdfborderstyle={/S/U/W 1},
+			%~ pdfborderstyle=false,
+            %~ pdfauthor={8Fragezeichen},
+            %~ pdftitle={\projektname{} / \DOCNAME{}},
+            %~ pdfsubject={Projektarbeit SE\,II},
+            %~ pdfkeywords={Software Engeneering, Care Garden, Therapie, Kommunikation, Team},
+            %~ pdfproducer={Wolf using markdown, pandoc and LaTeX},
+            %~ hyperfootnotes=false, %needed for footnotemisc
+            %~ pdfcreator={pdflatex}
+%~ ]{hyperref}
+
+
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{color}
+\usepackage{calc}
+%\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{booktabs} %\toprule ...
+\usepackage{bookmark}
+\usepackage{amsmath,amsfonts,amsthm} % Math packages
+\usepackage[
+	%singlespacing
+	onehalfspacing
+	%doublespacing
+]{setspace} %
+
+%for source code
+% see https://en.wikibooks.org/wiki/LaTeX/Source_Cbiode_Listings
+\usepackage{listings}
+\renewcommand{\lstlistingname}{}
+%~ \definecolor{mygreen}{rgb}{0,0.6,0}
+%~ \definecolor{mygray}{rgb}{0.5,0.5,0.5}
+%~ \definecolor{mymauve}{rgb}{0.58,0,0.82}
+\lstset{ %
+  %~ backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\footnotesize,        % the size of the fonts that are used for the code
+  breakatwhitespace=true,         % sets if automatic breaks should only happen at whitespace
+  %~ breaklines=true,                 % sets automatic line breaking
+  %~ captionpos=b,                    % sets the caption-position to bottom
+  %~ commentstyle=\color{mygreen},    % comment style
+  %~ deletekeywords={...},            % if you want to delete keywords from the given language
+  %~ escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+  %~ extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  %~ frame=single,	                   % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+  %~ keywordstyle=\color{blue},       % keyword style
+  %~ language=Octave,                 % the language of the code
+  %~ otherkeywords={*,...},           % if you want to add more keywords to the set
+  numbers=none,                    % where to put the line-numbers; possible values are (none, left, right)
+  %~ numbersep=5pt,                   % how far the line-numbers are from the code
+  %~ numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  %~ rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  %~ showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  %~ showstringspaces=false,          % underline spaces within strings only
+  %~ showtabs=false,                  % show tabs within strings adding particular underscores
+  %~ stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+  %~ stringstyle=\color{mymauve},     % string literal style
+  tabsize=2,	                   % sets default tabsize to 2 spaces
+  %~ title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+}
+\lstset{literate=%
+  {Ö}{{\"O}}1
+  {Ä}{{\"A}}1
+  {Ü}{{\"U}}1
+  {ß}{{\ss}}2
+  {ü}{{\"u}}1
+  {ä}{{\"a}}1
+  {ö}{{\"o}}1
+}
+
+\usepackage{fancyvrb}
+%\usepackage{url}
+\usepackage{multicol}\setlength{\columnsep}{1cm}
+\usepackage[normalem]{ulem}	%options: normalem | ULformem
+\usepackage[figure]{hypcap} %link on figure not caption, but caption must be set for figures
+
+%for references,literature
+%info: biber (2016) was incompatible with dependencies of biblatex (2015), so update or keep same versions together
+\usepackage[backend=biber,citestyle=authoryear]{biblatex}
+\addbibresource{./quellen.bib}
+
+%\usepackage{glossaries}
+%\setacronymstyle{long-sc-short}
+%%%
+%\loadglsentries{filename}	%loads definitions from filename
+%%%
+%\newacronym{svm}{SVM}{support vector machine}									% use with  \gls{svm}
+%\newglossaryentry{ex}{name={Enhances Xenophobic}, description={srsly?}}		% use with  \gls{svm}
+%%%
+
+\usepackage[maxfloats=90]{morefloats}%[2012/01/28]% v1.0f
+\usepackage{float} %enable floating with H for precise location
+\floatplacement{figure}{H} % standard placement: exactly here!
+\usepackage[section]{placeins}
+\usepackage{caption} %enable caption control
+\makeatletter
+	\addto\captionsngerman{\renewcommand{\figurename}{Abb.}} %caption name with babel and ngerman
+	%\renewcommand{\figurename}{Abb.}	%caption name without babel
+	\renewcommand{\fps@figure}{hbt}	%standard floating
+	\renewcommand{\fps@table}{hbt}	%standard floating
+\makeatother
+%~ \usepackage{fontspec} %requires either XeTeX or LuaTeX
+%~ \usepackage{xltxtra} %requires XeTeX
+%~ \usepackage{xunicode} %requires XeTeX
+
+\newlength{\imgwidth}
+\newlength{\imgwidthmax}
+\setlength{\imgwidthmax}{0.4\paperheight}
+
+\newcommand\scalegraphics[1]{%
+    \settowidth{\imgwidth}{\includegraphics{#1}}%
+    \setlength{\imgwidth}{\minof{\imgwidthmax}{\minof{\imgwidth}{0.9\textwidth}}}%
+    \includegraphics[width=\imgwidth]{#1}%
+}
+
+% include icon like graphics on the line
+
+% bigger but on the bottom line
+%~ \newcommand{\ico}[1]{\begingroup
+%~ \setbox0=\hbox{\includegraphics[height=1em,keepaspectratio]{#1}}%
+%~ \parbox{\wd0}{\box0}\endgroup}
+
+\newcommand{\ico}[1]{%
+	\includegraphics[height=0.8em,keepaspectratio]{#1}%
+}
+
+%for marking "Glossary"
+\newcommand{\g}{\textsuperscript{(G)}}%for marking "Glossary"
+
+%\title{
+%\vspace{3cm}
+%Pflichtenheft}
+
+%\subtitle{für\\CareGarden}
+
+%\author{ s72785, s72784, ... }
+
+% glossaries
+\usepackage[toc,xindy]{glossaries}
+\makeglossaries
+
+\date{}%no date on document as noone is really updating that
+\begin{document}
+
+%\frontmatter    %römische Nummerierung aktivieren
+\input{titlepage}
+%~ \maketitle       % Titelei
+%~ \listoffigures    %Abbildungsverzeichnis
+%~ \listoftables     % Tabellenverzeichnis
+\tableofcontents
+
+%\mainmatter    %Arabische Seitenummerierung
+%~ \newpage
+\pagenumbering{arabic}
+\input{Gliederung}
+
+ 
+%\backmatter    %Ende des Buches
+
+%~ \printglossary
+
+% in case appendix will be needed
+%~ \appendix
+%~ \chapter{Appendices}
+%~ \input{appendix}
+
+\end{document}
